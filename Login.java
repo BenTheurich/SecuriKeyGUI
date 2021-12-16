@@ -99,8 +99,13 @@ public class Login extends JFrame{
                     passwordField.selectAll();
                 }else{
                     File deleteFile = new File("Passwords.txt");
+                    File deleteFile2 = new File("User.txt");
                     deleteFile.delete();
-                    System.out.println("File Deleted.");
+                    deleteFile2.delete();
+                    JOptionPane.showMessageDialog(passwordField,
+                            "User account and passwords deleted",
+                            "Error Message",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
 
