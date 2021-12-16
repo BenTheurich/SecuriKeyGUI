@@ -205,32 +205,7 @@ public class MainPage extends JFrame{
         }
     }
 
-    public static void WriteToFile(String info, String data, boolean append) {
-        try {
-            FileWriter myWriter = new FileWriter(info, append);
-            myWriter.write(data);
-            System.lineSeparator();
-            myWriter.close();
-
-        } catch (IOException e) {
-            errorHandle();
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        readFile();
         new MainPage();
-
-        //Save current passwords to Passwords.txt
-        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-            public void run() {
-                WriteToFile("Passwords.txt", "", false);
-                for (int i = 0; i < List.passwordsList.size(); i++) {
-                    String input = (List.passwordsList.get(i).websiteName+ "  -  " + List.passwordsList.get(i).passwordString + "\n");
-                    WriteToFile("Passwords.txt", input, true);
-                }
-            }
-        }));
     }
 }
