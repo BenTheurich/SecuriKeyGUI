@@ -1,20 +1,34 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class EditPassword extends JFrame{
 
     private Color backColor = new Color(147, 147, 147);
     private Color offsetColor = new Color(192, 192, 192);
 
-    private String websiteName = "randomwebsite.com";
-    private String decryptedPassword = "abcdefg";
+    private String websiteName;
+    private String decryptedPassword;
 
+    JButton cancelButton = new JButton("Cancel");
+    JButton saveButton = new JButton("Save");
+    JTextField newPasswordField = new JTextField(decryptedPassword,15);
 
-    public EditPassword() {
+    private int passwordIndex;
+
+    public EditPassword(int passwordIndex) {
+
+        this.passwordIndex = passwordIndex;
+        this.websiteName = List.passwordsList.get(passwordIndex).websiteName;
+        this.decryptedPassword = List.passwordsList.get(passwordIndex).passwordString;
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        initEvent();
 
         JLabel websiteNameLabel = new JLabel(websiteName, SwingConstants.CENTER);
         websiteNameLabel.setFont(new Font("Calibri", Font.BOLD, 20));
@@ -26,14 +40,13 @@ public class EditPassword extends JFrame{
         c.fill = GridBagConstraints.HORIZONTAL;
         panel.add(websiteNameLabel, c);
 
-        JTextField field = new JTextField(decryptedPassword,15);
-        field.setBackground(offsetColor);
+        newPasswordField.setText(decryptedPassword);
+        newPasswordField.setBackground(offsetColor);
         c.gridx = 0;
         c.gridy = 1;
         c.gridwidth = 2;
-        panel.add(field, c);
+        panel.add(newPasswordField, c);
 
-        JButton cancelButton = new JButton("Cancel");
         cancelButton.setBorderPainted(false);
         cancelButton.setFocusPainted(false);
         cancelButton.setBackground(offsetColor);
@@ -42,7 +55,6 @@ public class EditPassword extends JFrame{
         c.gridy = 2;
         panel.add(cancelButton, c);
 
-        JButton saveButton = new JButton("Save");
         saveButton.setBorderPainted(false);
         saveButton.setFocusPainted(false);
         saveButton.setBackground(offsetColor);
@@ -61,8 +73,28 @@ public class EditPassword extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
+    private void initEvent(){
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e){
+                System.exit(1);
+            }
+        });
+        saveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                List.passwordsList.set(passwordIndex, new Password(websiteName, newPasswordField.getText()));
+                dispose();
+                new MainPage();
+            }
+        });
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new MainPage();
+            }
+        });
+    }
 
     public static void main(String[] args) {
-        new EditPassword();
+        //new EditPassword();
     }
 }

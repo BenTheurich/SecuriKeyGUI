@@ -2,14 +2,26 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainPage extends JFrame{
-    private String[] defaultValues =  {
-            "amazon.com", "target.com", "clubpenguin.com", "coolmathgames.com", "khanacademy.org", "bankofamerica.com", "lego.com", "nike.com",
-    };
+
     private JList jList = createJList();
     private Color backColor = new Color(147, 147, 147);
     private Color offsetColor = new Color(192, 192, 192);
+
+    JLabel passwordsLabel = new JLabel("Securi-Key", SwingConstants.CENTER);
+    JButton viewPasswordButton = new JButton("View Password");
+    JButton addPasswordButton = new JButton("Add Password");
+    JButton editPasswordButton = new JButton("Edit Password");
+    JButton deletePasswordButton = new JButton("Delete Password");
 
 
     public MainPage() {
@@ -17,8 +29,9 @@ public class MainPage extends JFrame{
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
+        initEvent();
 
-        JLabel passwordsLabel = new JLabel("Securi-Key", SwingConstants.CENTER);
+
         passwordsLabel.setFont(new Font("Calibri", Font.BOLD, 30));
         c.anchor = GridBagConstraints.PAGE_START;
         c.gridx = 0;
@@ -33,7 +46,6 @@ public class MainPage extends JFrame{
         c.gridy = 1;
         panel.add(new JScrollPane(jList), c);
 
-        JButton viewPasswordButton = new JButton("View Password");
         viewPasswordButton.setBorderPainted(false);
         viewPasswordButton.setFocusPainted(false);
         viewPasswordButton.setBackground(offsetColor);
@@ -48,7 +60,6 @@ public class MainPage extends JFrame{
         c.fill = GridBagConstraints.VERTICAL;
         panel.add(createTextField(), c);
 
-        JButton addPasswordButton = new JButton("Add Password");
         addPasswordButton.setBorderPainted(false);
         addPasswordButton.setFocusPainted(false);
         addPasswordButton.setBackground(offsetColor);
@@ -56,7 +67,6 @@ public class MainPage extends JFrame{
         c.gridy = 3;
         panel.add(addPasswordButton, c);
 
-        JButton editPasswordButton = new JButton("Edit Password");
         editPasswordButton.setBorderPainted(false);
         editPasswordButton.setFocusPainted(false);
         editPasswordButton.setBackground(offsetColor);
@@ -64,7 +74,6 @@ public class MainPage extends JFrame{
         c.gridy = 3;
         panel.add(editPasswordButton, c);
 
-        JButton deletePasswordButton = new JButton("Delete Password");
         deletePasswordButton.setBorderPainted(false);
         deletePasswordButton.setFocusPainted(false);
         deletePasswordButton.setBackground(offsetColor);
@@ -99,6 +108,7 @@ public class MainPage extends JFrame{
 
     private JList createJList() {
         JList list = new JList(createDefaultListModel());
+        list.setSelectionInterval(0, 0);
         list.setBackground(new Color(192, 192, 192));
         list.setVisibleRowCount(6);
         return list;
@@ -106,14 +116,16 @@ public class MainPage extends JFrame{
 
     private ListModel<String> createDefaultListModel() {
         DefaultListModel<String> model = new DefaultListModel<>();
-        for (String s : defaultValues) {
+        for (int i = 0; i < List.passwordsList.size(); i++) {
+            String s = List.passwordsList.get(i).websiteName;
             model.addElement(s);
         }
         return model;
     }
 
     public void filterModel(DefaultListModel<String> model, String filter) {
-        for (String s : defaultValues) {
+        for (int i = 0; i < List.passwordsList.size(); i++) {
+            String s = List.passwordsList.get(i).websiteName;
             if (!s.startsWith(filter)) {
                 if (model.contains(s)) {
                     model.removeElement(s);
@@ -126,7 +138,99 @@ public class MainPage extends JFrame{
         }
     }
 
+    private void initEvent(){
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e){
+                System.exit(1);
+            }
+        });
+        viewPasswordButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(jList.getSelectedIndex() != -1) {
+                    dispose();
+                    int index = jList.getSelectedIndex();
+                    new ViewPassword(index);
+                }
+            }
+        });
+        addPasswordButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                new AddPassword();
+            }
+        });
+        deletePasswordButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(jList.getSelectedIndex() != -1) {
+                    dispose();
+                    int index = jList.getSelectedIndex();
+                    new DeleteConf(index);
+                }
+            }
+        });
+        editPasswordButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(jList.getSelectedIndex() != -1) {
+                    dispose();
+                    int index = jList.getSelectedIndex();
+                    new EditPassword(index);
+                }
+            }
+        });
+    }
+    private static void process(String line) {
+        System.out.println(line);
+    }
+
+    public static void errorHandle() {
+        System.out.println("An error has occured.");
+    }
+
+    public static void readFile(){
+        Pattern pattern = Pattern.compile("(.*)  -  (.*)");
+        try {
+            File myObj = new File("Passwords.txt");
+            Scanner myReader = new Scanner(myObj);
+            while (myReader.hasNextLine()) {
+                String line = myReader.nextLine();
+                Matcher matcher = pattern.matcher(line);
+                if (matcher.matches()) {
+                    List.passwordsList.add(new Password(matcher.group(1), matcher.group(2)));
+                }
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void WriteToFile(String info, String data, boolean append) {
+        try {
+            FileWriter myWriter = new FileWriter(info, append);
+            myWriter.write(data);
+            System.lineSeparator();
+            myWriter.close();
+
+        } catch (IOException e) {
+            errorHandle();
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
+        readFile();
         new MainPage();
+
+        //Save current passwords to Passwords.txt
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                WriteToFile("Passwords.txt", "", false);
+                for (int i = 0; i < List.passwordsList.size(); i++) {
+                    String input = (List.passwordsList.get(i).websiteName+ "  -  " + List.passwordsList.get(i).passwordString + "\n");
+                    WriteToFile("Passwords.txt", input, true);
+                }
+            }
+        }));
     }
 }
