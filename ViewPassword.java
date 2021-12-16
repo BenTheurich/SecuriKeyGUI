@@ -23,7 +23,7 @@ public class ViewPassword extends JFrame{
         this.passwordIndex = passwordIndex;
 
         this.websiteName = List.passwordsList.get(passwordIndex).websiteName;
-        this.decryptedPassword = List.passwordsList.get(passwordIndex).passwordString;
+        this.decryptedPassword = AES.decrypt(List.passwordsList.get(passwordIndex).passwordString, List.secretKey);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());

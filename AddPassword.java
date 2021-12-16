@@ -91,7 +91,7 @@ public class AddPassword extends JFrame{
         });
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                List.passwordsList.add(new Password(websiteField.getText(), passwordField.getText()));
+                List.passwordsList.add(new Password(websiteField.getText(), AES.encrypt(passwordField.getText(), List.secretKey)));
                 dispose();
                 new MainPage();
             }

@@ -23,7 +23,7 @@ public class EditPassword extends JFrame{
 
         this.passwordIndex = passwordIndex;
         this.websiteName = List.passwordsList.get(passwordIndex).websiteName;
-        this.decryptedPassword = List.passwordsList.get(passwordIndex).passwordString;
+        this.decryptedPassword = AES.decrypt(List.passwordsList.get(passwordIndex).passwordString, List.secretKey);
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
@@ -81,7 +81,7 @@ public class EditPassword extends JFrame{
         });
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                List.passwordsList.set(passwordIndex, new Password(websiteName, newPasswordField.getText()));
+                List.passwordsList.set(passwordIndex, new Password(websiteName, AES.encrypt(newPasswordField.getText(), List.secretKey)));
                 dispose();
                 new MainPage();
             }

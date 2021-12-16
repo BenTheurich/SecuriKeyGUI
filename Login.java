@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -79,7 +81,8 @@ public class Login extends JFrame{
                 String input  = String. valueOf(passwordField.getPassword());
 
                 if (failed <= 4){
-                    if (Integer.toString(input.hashCode()).equals(returnPass())) {
+                    if (sha256(input).equals(returnPass())) {
+                        List.secretKey = input;
                         dispose();
                         new MainPage();
                         System.out.println(failed);
@@ -140,6 +143,23 @@ public class Login extends JFrame{
         }
     }
 
+    public static String sha256(final String base) {
+        try{
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            final StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < hash.length; i++) {
+                final String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
     public static void firstTimeUser(){
 
         if (doesFileExist("User.txt") != true){
@@ -148,10 +168,9 @@ public class Login extends JFrame{
             Scanner user = new Scanner(System.in);
             System.out.println("Please create your password.");
 
-            //String pass = user.nextLine();
-            pass = Integer.toString(pass.hashCode());
+            String hashedPass = sha256(pass);
             makeFile("User.txt");
-            WriteToFile("User.txt", pass);
+            WriteToFile("User.txt", hashedPass);
         }
     }
     public static void WriteToFile(String info, String data) {

@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 public class MainPage extends JFrame{
 
+
     private JList jList = createJList();
     private Color backColor = new Color(147, 147, 147);
     private Color offsetColor = new Color(192, 192, 192);
@@ -146,7 +147,7 @@ public class MainPage extends JFrame{
         });
         viewPasswordButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(jList.getSelectedIndex() != -1) {
+                if(jList.getSelectedIndex() != -1 && List.passwordsList.size() > 0) {
                     dispose();
                     int index = jList.getSelectedIndex();
                     new ViewPassword(index);
@@ -161,7 +162,7 @@ public class MainPage extends JFrame{
         });
         deletePasswordButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(jList.getSelectedIndex() != -1) {
+                if(jList.getSelectedIndex() != -1 && List.passwordsList.size() > 0) {
                     dispose();
                     int index = jList.getSelectedIndex();
                     new DeleteConf(index);
@@ -170,7 +171,7 @@ public class MainPage extends JFrame{
         });
         editPasswordButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(jList.getSelectedIndex() != -1) {
+                if(jList.getSelectedIndex() != -1 && List.passwordsList.size() > 0) {
                     dispose();
                     int index = jList.getSelectedIndex();
                     new EditPassword(index);
@@ -204,6 +205,7 @@ public class MainPage extends JFrame{
             e.printStackTrace();
         }
     }
+
 
     public static void main(String[] args) {
         new MainPage();
