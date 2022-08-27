@@ -58,3 +58,9 @@ After closing the application, all passwords will be stored in a txt file called
 That is about all you need to know to use this simple application. It is recommended to keep the USB drive unplugged from your device when not actively looking up a password. Even though the passwords are all securely encrypted, keeping the drive offline gives hackers a 0% chance of accessing your passwords remotely.
 
 Have fun, and stay safe out there!
+
+## Class Presentation Demo
+
+https://user-images.githubusercontent.com/81211973/187044441-a8c69fa3-18a4-40d9-a045-b561cb85c2c7.mp4
+
+
